@@ -41,6 +41,14 @@
             <version>3.1.1</version>
             <scope>provided</scope>
         </dependency>
+        <!-- Jakarta JSON Binding API (JSON-B) - Fixar röd error i PetDTO -->
+        <dependency>
+            <groupId>jakarta.json.bind</groupId>
+            <artifactId>jakarta.json.bind-api</artifactId>
+            <version>3.0.1</version>
+            <scope>provided</scope>
+        </dependency>
+
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
