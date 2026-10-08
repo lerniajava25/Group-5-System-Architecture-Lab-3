@@ -1,4 +1,4 @@
-# Group 5 - System Architecture
+# Group 5 - System Architecture (Ghudsan, Osama, Waqar)
 
 This repository contains the implementation of a RESTful Web Service built with Jakarta EE 11, JAX-RS, CDI, and Bean Validation running on a WildFly application server. The application features a thread-safe, in-memory architecture controlled by a `ReentrantLock`.
 
