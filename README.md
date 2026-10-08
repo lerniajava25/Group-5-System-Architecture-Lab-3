@@ -95,7 +95,7 @@ curl -X GET http://localhost:8080/api/pets/999
 
 ## Bonus Features
 
-### Sortering
+### Sorting
 Query by allowed values: name, species, hungerLevel, happiness. Else show error.
 ```bash
 curl -X GET "http://localhost:8080/api/pets?sortBy=secretField&order=desc"
