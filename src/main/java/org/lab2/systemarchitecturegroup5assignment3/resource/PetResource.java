@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import jakarta.validation.constraints.Pattern;
 
 /**
  * JAX-RS Resource class exposing RESTful web service endpoints for pet management.
@@ -52,8 +53,16 @@ public class PetResource {
      * GET /pets -> List all adopted pets currently stored in memory.
      */
     @GET
-    public Response listAllPets() {
-        List<PetDTO> allPets = petService.getAllPets();
+    public Response listAllPets(
+            @QueryParam("sortBy")
+            @Pattern(regexp = "^(?i)(name|species|hungerLevel|happiness)$",
+                    message = "Invalid sort field. Allowed values are: name, species, hungerLevel, happiness")
+            String sortBy,
+            @QueryParam("order")
+            @Pattern(regexp = "^(?i)(asc|desc)$",
+                    message = "Invalid sort order. Allowed values are: asc, desc")
+            String order)  {
+        List<PetDTO> allPets = petService.getAllPets(sortBy, order);
         List<Map<String, Object>> sortedPetsList = new ArrayList<>();
 
         for (PetDTO pet : allPets) {

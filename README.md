@@ -69,4 +69,38 @@ Removes the data structure entry key mapping entirely from the in-memory persist
 curl -X DELETE http://localhost:8080/api/pets/1
 ```
 
+## Validations (ValidationException, NotFoundException)
+
+### ValidationException
+Post only if Hunger level is under 100 else show error message "Hunger level cannot be above 100".
+```bash
+curl -X POST http://localhost:8080/api/pets -H "Content-Type: application/json" -d "{\"name\": \"\", \"species\": \"Dog\", \"hungerLevel\": 150, \"happiness\": 80}"
+```
+#### Error:
+```bash
+{"error":"Bad Request","Status":"400","message":"Validation failed","errors":{"hungerLevel":"Hunger level cannot be above 100","name":"A pet name is required"}}
+```
+
+
+### NotFoundException
+Get pets by ID and show error message if ID doesn't exist.
+```bash
+curl -X GET http://localhost:8080/api/pets/999
+```
+#### Error:
+```bash
+{"error":"Not Found","message":"Pet with ID 999 not found"}
+```
+
+
+## Bonus Features
+
+### Sortering
+Query by allowed values: name, species, hungerLevel, happiness. Else show error.
+```bash
+curl -X GET "http://localhost:8080/api/pets?sortBy=secretField&order=desc"
+```
+#### Error:
+```bash
+{"error":"Bad Request","Status":"400","message":"Validation failed","errors":{"arg0":"Invalid sort field. Allowed values are: name, species, hungerLevel, happiness"}}
 ```
