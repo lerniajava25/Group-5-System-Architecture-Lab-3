@@ -130,4 +130,9 @@ The string operations are bound using case-insensitive validation lookups. Passi
 ```bash
 curl -X GET "http://localhost:8080/api/pets?species=cat"
 
+
+### Filtering
+Filter pets by species using the `species` query parameter. Matching is case-insensitive.
+```bash
+curl -X GET "http://localhost:8080/api/pets?species=Dog"
 ```
