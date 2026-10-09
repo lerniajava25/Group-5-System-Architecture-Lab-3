@@ -4,7 +4,6 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.ws.rs.NotFoundException;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
@@ -30,31 +29,18 @@ public class PetService {
     }
 
     // Returns all pets currently stored in the service.
-    public List<PetDTO> getAllPets(String sortBy, String order) {
+    public List<PetDTO> getAllPets(String filterSpecies) {
         List<PetDTO> petList = new ArrayList<>(pets.values());
 
-        if (sortBy == null || sortBy.isBlank()) {
-            return petList; // Return unsorted if parameter is missing
+        //  Apply Filtering
+        if (filterSpecies != null && !filterSpecies.isBlank()) {
+            petList.removeIf(pet -> pet.species() == null ||
+                    !pet.species().equalsIgnoreCase(filterSpecies.trim()));
         }
 
-        // Determine property comparison strategy
-        Comparator<PetDTO> comparator = switch (sortBy.toLowerCase()) {
-            case "name" -> Comparator.comparing(PetDTO::name, String.CASE_INSENSITIVE_ORDER);
-            case "species" -> Comparator.comparing(PetDTO::species, String.CASE_INSENSITIVE_ORDER);
-            case "hungerlevel" -> Comparator.comparing(PetDTO::hungerLevel);
-            case "happiness" -> Comparator.comparing(PetDTO::happiness);
-            default -> null;
-        };
-
-        if (comparator != null) {
-            // Apply reverse ordering if 'desc' is requested
-            if ("desc".equalsIgnoreCase(order)) {
-                comparator = comparator.reversed();
-            }
-            petList.sort(comparator);
-        }
 
         return petList;
+
     }
 
     // Finds one pet by ID or reports that the pet does not exist.

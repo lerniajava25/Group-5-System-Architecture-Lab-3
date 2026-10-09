@@ -104,3 +104,30 @@ curl -X GET "http://localhost:8080/api/pets?sortBy=secretField&order=desc"
 ```bash
 {"error":"Bad Request","Status":"400","message":"Validation failed","errors":{"arg0":"Invalid sort field. Allowed values are: name, species, hungerLevel, happiness"}}
 ```
+---
+
+## High-Grade Bonus Feature: Dynamic Species Filtering
+
+The application includes an advanced server-side filtering implementation designed for higher grades. It leverages the `UriInfo` context mapping layer to dynamically parse queries directly from the URL path.
+
+To verify this feature, ensure you have populated the memory storage with distinct animal types (e.g., both "cat" and "dog" entries). You can validate the runtime behavior using either a standard Web Browser or curl terminal routines.
+
+### Option A: Test Directly in the Web Browser (Recommended)
+Open your preferred web browser and enter the following URLs into the address bar to view the dynamically filtered datasets:
+- To list only dogs: `http://localhost:8080/api/pets?species=dog`
+- To list only cats: `http://localhost:8080/api/pets?species=cat`
+
+### Option B: Test via Terminal (curl Commands)
+
+#### Test 1: Fetch Only Dogs
+Execute a query to retrieve data elements matching the target identifier sequence. The backend engine isolates the entries and excludes non-matching nodes automatically.
+```bash
+curl -X GET "http://localhost:8080/api/pets?species=dog"
+```
+
+#### Test 2: Case-Insensitive Matching
+The string operations are bound using case-insensitive validation lookups. Passing alternative uppercase representations will still map and execute successfully.
+```bash
+curl -X GET "http://localhost:8080/api/pets?species=cat"
+
+```
