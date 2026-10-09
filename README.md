@@ -95,6 +95,12 @@ curl -X GET http://localhost:8080/api/pets/999
 
 ## Bonus Features
 
+
+### List Pets with Pagination (GET)
+Retrieves a page of pets. offset is the number of pets to skip and limit is the maximum number of pets to return. Both parameters are optional.
+
+curl -X GET "http://localhost:8080/api/pets?offset=0&limit=10"
+
 ### Sorting
 Query by allowed values: name, species, hungerLevel, happiness. Else show error.
 ```bash
