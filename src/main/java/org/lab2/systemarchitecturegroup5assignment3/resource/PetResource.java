@@ -5,8 +5,6 @@ import org.lab2.systemarchitecturegroup5assignment3.PetService;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
-import jakarta.ws.rs.core.Context;     // <-- KRÄVS FÖR URIINFO
-import jakarta.ws.rs.core.UriInfo;     // <-- KRÄVS FÖR URIINFO
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import java.util.ArrayList;
@@ -53,21 +51,34 @@ public class PetResource {
 
     /**
      * GET /pets -> List all adopted pets currently stored in memory.
-     * FULFILLING BONUS REQUIREMENT: Uses UriInfo to safely support filtering on the root path.
-     * Example: GET /api/pets?species=dog
      */
     @GET
     public Response listAllPets(
-            //Filter
-            @QueryParam("species") String filterSpecies)
+            // Filter
+            @QueryParam("species") String filterSpecies,
+            // Sorting
+            @QueryParam("sortBy")
+            @Pattern(regexp = "^(?i)(name|species|hungerLevel|happiness)$",
+                    message = "Invalid sort field. Allowed values are: name, species, hungerLevel, happiness")
+            String sortBy,
+            @QueryParam("order")
+            @Pattern(regexp = "^(?i)(asc|desc)$",
+                    message = "Invalid sort order. Allowed values are: asc, desc")
+            String order,
+            @DefaultValue("0") @QueryParam("offset") int offset,
+            @DefaultValue("10") @QueryParam("limit") int limit)  {
 
-    {
+        if (offset < 0 || limit <= 0) {
+            throw new BadRequestException("Offset must be 0 or greater and limit must be greater than 0");
+        }
 
-        // Pass filter constraints and sort directives down together
-        List<PetDTO> filteredAndSortedPets = petService.getAllPets(filterSpecies);
+        List<PetDTO> allPets = petService.getAllPets(filterSpecies, sortBy, order);
+        int firstPet = Math.min(offset, allPets.size());
+        int lastPet = Math.min(firstPet + limit, allPets.size());
+        List<PetDTO> pageOfPets = allPets.subList(firstPet, lastPet);
         List<Map<String, Object>> sortedPetsList = new ArrayList<>();
 
-        for (PetDTO pet : filteredAndSortedPets) {
+        for (PetDTO pet : pageOfPets) {
             sortedPetsList.add(convertToSortedMap(pet));
         }
 
