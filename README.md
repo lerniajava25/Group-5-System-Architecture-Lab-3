@@ -1,4 +1,4 @@
-# Group 5 - System Architecture
+# Group 5 - System Architecture (Ghudsan, Osama, Waqar)
 
 This repository contains the implementation of a RESTful Web Service built with Jakarta EE 11, JAX-RS, CDI, and Bean Validation running on a WildFly application server. The application features a thread-safe, in-memory architecture controlled by a `ReentrantLock`.
 
@@ -39,10 +39,10 @@ Submits a new pet payload to the application context. The internal service assig
 curl -X POST http://localhost:8080/api/pets -H "Content-Type: application/json" -d "{\"name\": \"Charlie\", \"species\": \"Dog\", \"hungerLevel\": 50, \"happiness\": 50}"
 ```
 
-### 2. List All Pets (GET)
-Retrieves a complete summary list containing all active pet data objects currently registered in the system collection cache.
+### 2. List Pets with Pagination (GET)
+Retrieves a page of pets. `offset` is the number of pets to skip and `limit` is the maximum number of pets to return. Both parameters are optional.
 ```bash
-curl -X GET http://localhost:8080/api/pets
+curl -X GET "http://localhost:8080/api/pets?offset=0&limit=10"
 ```
 
 ### 3. View Specific Pet Status (GET with ID)
@@ -69,6 +69,40 @@ Removes the data structure entry key mapping entirely from the in-memory persist
 curl -X DELETE http://localhost:8080/api/pets/1
 ```
 
+## Validations (ValidationException, NotFoundException)
+
+### ValidationException
+Post only if Hunger level is under 100 else show error message "Hunger level cannot be above 100".
+```bash
+curl -X POST http://localhost:8080/api/pets -H "Content-Type: application/json" -d "{\"name\": \"\", \"species\": \"Dog\", \"hungerLevel\": 150, \"happiness\": 80}"
+```
+#### Error:
+```bash
+{"error":"Bad Request","Status":"400","message":"Validation failed","errors":{"hungerLevel":"Hunger level cannot be above 100","name":"A pet name is required"}}
+```
+
+
+### NotFoundException
+Get pets by ID and show error message if ID doesn't exist.
+```bash
+curl -X GET http://localhost:8080/api/pets/999
+```
+#### Error:
+```bash
+{"error":"Not Found","message":"Pet with ID 999 not found"}
+```
+
+
+## Bonus Features
+
+### Sorting
+Query by allowed values: name, species, hungerLevel, happiness. Else show error.
+```bash
+curl -X GET "http://localhost:8080/api/pets?sortBy=secretField&order=desc"
+```
+#### Error:
+```bash
+{"error":"Bad Request","Status":"400","message":"Validation failed","errors":{"arg0":"Invalid sort field. Allowed values are: name, species, hungerLevel, happiness"}}
 ```
 ---
 
