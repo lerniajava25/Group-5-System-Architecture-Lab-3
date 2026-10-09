@@ -61,11 +61,21 @@ public class PetResource {
             @QueryParam("order")
             @Pattern(regexp = "^(?i)(asc|desc)$",
                     message = "Invalid sort order. Allowed values are: asc, desc")
-            String order)  {
+            String order,
+            @DefaultValue("0") @QueryParam("offset") int offset,
+            @DefaultValue("10") @QueryParam("limit") int limit)  {
+
+        if (offset < 0 || limit <= 0) {
+            throw new BadRequestException("Offset must be 0 or greater and limit must be greater than 0");
+        }
+
         List<PetDTO> allPets = petService.getAllPets(sortBy, order);
+        int firstPet = Math.min(offset, allPets.size());
+        int lastPet = Math.min(firstPet + limit, allPets.size());
+        List<PetDTO> pageOfPets = allPets.subList(firstPet, lastPet);
         List<Map<String, Object>> sortedPetsList = new ArrayList<>();
 
-        for (PetDTO pet : allPets) {
+        for (PetDTO pet : pageOfPets) {
             sortedPetsList.add(convertToSortedMap(pet));
         }
 
@@ -118,4 +128,3 @@ public class PetResource {
         return Response.noContent().build();
     }
 }
-
