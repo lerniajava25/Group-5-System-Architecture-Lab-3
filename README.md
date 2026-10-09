@@ -39,10 +39,10 @@ Submits a new pet payload to the application context. The internal service assig
 curl -X POST http://localhost:8080/api/pets -H "Content-Type: application/json" -d "{\"name\": \"Charlie\", \"species\": \"Dog\", \"hungerLevel\": 50, \"happiness\": 50}"
 ```
 
-### 2. List Pets with Pagination (GET)
-Retrieves a page of pets. `offset` is the number of pets to skip and `limit` is the maximum number of pets to return. Both parameters are optional.
+### 2. List All Pets (GET)
+Retrieves a complete summary list containing all active pet data objects currently registered in the system collection cache.
 ```bash
-curl -X GET "http://localhost:8080/api/pets?offset=0&limit=10"
+curl -X GET http://localhost:8080/api/pets
 ```
 
 ### 3. View Specific Pet Status (GET with ID)
@@ -135,4 +135,9 @@ curl -X GET "http://localhost:8080/api/pets?species=cat"
 Filter pets by species using the `species` query parameter. Matching is case-insensitive.
 ```bash
 curl -X GET "http://localhost:8080/api/pets?species=Dog"
+```
+###  List Pets with Pagination (GET)
+Retrieves a page of pets. `offset` is the number of pets to skip and `limit` is the maximum number of pets to return. Both parameters are optional.
+```bash
+curl -X GET "http://localhost:8080/api/pets?offset=0&limit=10"
 ```
