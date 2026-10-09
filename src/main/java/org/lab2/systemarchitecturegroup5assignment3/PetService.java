@@ -3,6 +3,7 @@ package org.lab2.systemarchitecturegroup5assignment3;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.ws.rs.NotFoundException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
@@ -28,8 +29,18 @@ public class PetService {
     }
 
     // Returns all pets currently stored in the service.
-    public List<PetDTO> getAllPets() {
-        return List.copyOf(pets.values());
+    public List<PetDTO> getAllPets(String filterSpecies) {
+        List<PetDTO> petList = new ArrayList<>(pets.values());
+
+        //  Apply Filtering
+        if (filterSpecies != null && !filterSpecies.isBlank()) {
+            petList.removeIf(pet -> pet.species() == null ||
+                    !pet.species().equalsIgnoreCase(filterSpecies.trim()));
+        }
+
+
+        return petList;
+
     }
 
     // Finds one pet by ID or reports that the pet does not exist.

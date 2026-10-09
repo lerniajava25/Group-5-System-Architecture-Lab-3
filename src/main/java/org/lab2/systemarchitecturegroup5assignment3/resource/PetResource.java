@@ -56,25 +56,17 @@ public class PetResource {
      * Example: GET /api/pets?species=dog
      */
     @GET
-    public Response listAllPets(@Context UriInfo uriInfo) { // <-- ANVÄNDER URIINFO PÅ ROT-NIVÅ
-        // Läser söksträngen direkt från webbadressen (t.ex. "dog")
-        String species = uriInfo.getQueryParameters().getFirst("species");
+    public Response listAllPets(
+            //Filter
+            @QueryParam("species") String filterSpecies)
 
-        // 1. Hämta alla husdjur från minnet
-        List<PetDTO> allPets = petService.getAllPets();
+    {
+
+        // Pass filter constraints and sort directives down together
+        List<PetDTO> filteredAndSortedPets = petService.getAllPets(filterSpecies);
         List<Map<String, Object>> sortedPetsList = new ArrayList<>();
 
-        // 2. Loopa igenom och utför backend-filtrering
-        for (PetDTO pet : allPets) {
-            // Om användaren har skrivit en art i webbadressen (t.ex. ?species=dog)
-            if (species != null && !species.trim().isEmpty()) {
-                // Hoppa över detta husdjur om dess art INTE matchar det som användaren sökte efter
-                if (pet.species() == null || !pet.species().trim().equalsIgnoreCase(species.trim())) {
-                    continue;
-                }
-            }
-
-            // Lägg enbart till de husdjur som matchar filtret (eller alla om inget filter angetts)
+        for (PetDTO pet : filteredAndSortedPets) {
             sortedPetsList.add(convertToSortedMap(pet));
         }
 
